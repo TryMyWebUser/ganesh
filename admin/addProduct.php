@@ -1,3 +1,35 @@
+<?php
+
+    include "../libs/load.php";
+
+    // Start a session
+    Session::start();
+
+    if (!Session::get('login_user'))
+    {
+        header("Location: index.php");
+        exit;
+    }
+
+    $error = "";
+
+    // Check if form is submitted
+    if ($_SERVER['REQUEST_METHOD'] === 'POST')
+    {
+        // Check if both username and password keys exist in $_POST
+        if (isset($_POST['submit']) && isset($_POST['category']) && isset($_POST['title']) && isset($_POST['dec']) && isset($_FILES['img']))
+        {
+            $cate = $_POST['category'] ?? "";
+            $title = $_POST['title'] ?? "";
+            $dec = $_POST['dec'] ?? "";
+            $img = $_FILES['img'] ?? "";
+
+            $error = User::setProducts($title, $dec, $img, $cate);
+        }
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,10 +72,31 @@
                         <div class="col-sm-12 col-xl-6">
                             <div class="bg-light rounded h-100 p-4">
                                 <h6 class="mb-4">Products Uploads</h6>
+                                <p class="<?= $error ? 'text-danger' : 'text-success' ?>"><?= $error ?></p>
                                 <form method="POST" enctype="multipart/form-data">
                                     <select class="form-select mb-3" name="category" required>
                                         <option>Select Category *</option>
-                                        <option value=""></option>
+                                        <option disabled>Packers & Movers Page:</option>
+                                        <?php
+                                            $category = Operations::getCategory();
+                                            foreach ($category as $cate) :
+                                                if ($cate['page'] === 'p&m') {
+                                        ?>
+                                        <option value="<?= $cate['category'] ?>"><?= $cate['category'] ?></option>
+                                        <?php
+                                                }
+                                            endforeach;
+                                        ?>
+                                        <option disabled>Service Page:</option>
+                                        <?php
+                                            foreach ($category as $cate) :
+                                                if ($cate['page'] === 'service') {
+                                        ?>
+                                        <option value="<?= $cate['category'] ?>"><?= $cate['category'] ?></option>
+                                        <?php
+                                                }
+                                            endforeach;
+                                        ?>
                                     </select>
                                     <div class="mb-3">
                                         <!-- <label class="form-label">Product Title *</label> -->
@@ -55,7 +108,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <!-- <label for="formFile" class="form-label">Default file input example</label> -->
-                                        <input class="form-control" type="file" name="img" id="formFile" required>
+                                        <input class="form-control" type="file" name="img" id="formFile" accept="image/*" required>
                                     </div>
                                     <button type="submit" name="submit" class="btn btn-primary">Upload</button>
                                 </form>

@@ -1,3 +1,18 @@
+<?php
+
+    include "../libs/load.php";
+
+    // Start a session
+    Session::start();
+
+    if (!Session::get('login_user'))
+    {
+        header("Location: index.php");
+        exit;
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

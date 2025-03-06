@@ -1,3 +1,36 @@
+<?php
+
+    include "../libs/load.php";
+
+    // Start a session
+    Session::start();
+
+    if (!Session::get('login_user'))
+    {
+        header("Location: index.php");
+        exit;
+    }
+
+    $conn = Database::getConnect();
+    $cate = Operations::getCate($conn);
+
+    $error = "";
+
+    // Check if form is submitted
+    if ($_SERVER['REQUEST_METHOD'] === 'POST')
+    {
+        // Check if both username and password keys exist in $_POST
+        if (isset($_POST['submit']) && isset($_POST['page']) && isset($_POST['category']))
+        {
+            $getID = $_GET['edit_id'] ?? "";
+            $page = $_POST['page'] ?? "";
+            $cate = $_POST['category'] ?? "";
+            $error = User::updateCategory($getID, $page, $cate, $conn);
+        }
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,18 +72,18 @@
                     <div class="row g-4">
                         <div class="col-sm-12 col-xl-6">
                             <div class="bg-light rounded h-100 p-4">
-                                <h6 class="mb-4">Category Uploads</h6>
+                                <h6 class="mb-4">Category Edit</h6>
                                 <form method="POST">
-                                    <select class="form-select mb-3" name="page" required>
-                                        <option>Select The Page</option>
+                                    <select class="form-select mb-3" name="page">
+                                        <option value="<?= $cate['page']; ?>">Select The Page</option>
                                         <option value="p&m">Packers & Movers Page</option>
                                         <option value="service">Service Page</option>
                                     </select>
                                     <div class="mb-3">
                                         <label class="form-label">Category?</label>
-                                        <input type="text" name="category" class="form-control" required>
+                                        <input type="text" name="category" class="form-control" value="<?= $cate['category']; ?>">
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                    <button type="submit" name="submit" class="btn btn-primary">Save</button>
                                 </form>
                             </div>
                         </div>

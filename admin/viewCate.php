@@ -1,3 +1,20 @@
+<?php
+
+    include "../libs/load.php";
+
+    // Start a session
+    Session::start();
+
+    if (!Session::get('login_user'))
+    {
+        header("Location: index.php");
+        exit;
+    }
+
+    $category = Operations::getCategory();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -49,17 +66,22 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <?php
+                                                foreach ($category as $cate) {
+                                                    if ($cate['page'] === 'p&m') {
+                                            ?>
                                             <tr scope="row" colspan="2">
-                                                <td>John</td>
+                                                <td><?= $cate['category']; ?></td>
                                                 <td>
-                                                    <a href="">
+                                                    <a href="editCate.php?edit_id=<?= $cate['id']; ?>">
                                                         <button type="button" class="btn btn-square btn-outline-info m-2"><i class="fa fa-pen"></i></button>
                                                     </a>
-                                                    <a href="">
+                                                    <a href="deleteCate.php?delete_id=<?= $cate['id']; ?>">
                                                         <button type="button" class="btn btn-square btn-outline-danger m-2"><i class="fa fa-trash"></i></button>
                                                     </a>
                                                 </td>
                                             </tr>
+                                            <?php } } ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -77,17 +99,22 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            <?php
+                                                foreach ($category as $cate) {
+                                                    if ($cate['page'] === 'service') {
+                                            ?>
                                             <tr scope="row" colspan="2">
-                                                <td>John</td>
+                                                <td><?= $cate['category']; ?></td>
                                                 <td>
-                                                    <a href="">
+                                                    <a href="editCate.php?edit_id=<?= $cate['id']; ?>">
                                                         <button type="button" class="btn btn-square btn-outline-info m-2"><i class="fa fa-pen"></i></button>
                                                     </a>
-                                                    <a href="">
+                                                    <a href="deleteCate.php?delete_id=<?= $cate['id']; ?>">
                                                         <button type="button" class="btn btn-square btn-outline-danger m-2"><i class="fa fa-trash"></i></button>
                                                     </a>
                                                 </td>
                                             </tr>
+                                            <?php } } ?>
                                         </tbody>
                                     </table>
                                 </div>

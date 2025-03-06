@@ -1,3 +1,32 @@
+<?php
+
+    include "../libs/load.php";
+
+    // Start a session
+    Session::start();
+
+    if (!Session::get('login_user'))
+    {
+        header("Location: index.php");
+        exit;
+    }
+
+    $error = "";
+
+    // Check if form is submitted
+    if ($_SERVER['REQUEST_METHOD'] === 'POST')
+    {
+        // Check if both username and password keys exist in $_POST
+        if (isset($_POST['submit']) && isset($_POST['page']) && isset($_POST['category']))
+        {
+            $page = $_POST['page'] ?? "";
+            $cate = $_POST['category'] ?? "";
+            $error = User::setCategory($page, $cate);
+        }
+    }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,7 +79,7 @@
                                         <label class="form-label">Category?</label>
                                         <input type="text" name="category" class="form-control" required>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                    <button type="submit" name="submit" class="btn btn-primary">Upload</button>
                                 </form>
                             </div>
                         </div>
